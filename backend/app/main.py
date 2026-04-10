@@ -10,6 +10,8 @@ from app.api.db.init_db import seed_database
 from app.db.session import engine, Base, SessionLocal
 from app.api.routes import auth, dashboard, health, logs, rules
 from app.core.config import settings
+from app.core.mongo_client import check_mongo_connection
+from app.core.redis_client import check_redis_connection
 from app.middleware.firewall import FirewallMiddleware
 
 logger = logging.getLogger("uvicorn.error")
@@ -20,6 +22,10 @@ app = FastAPI(title=settings.app_name)
 @app.on_event("startup")
 def startup_event():
     """Initialize database on app startup."""
+    logger.info("Environment loaded: %s", settings.environment_summary())
+    check_mongo_connection()
+    check_redis_connection()
+
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:

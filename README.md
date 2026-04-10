@@ -46,8 +46,8 @@ npm run dev
 
 ## Auth Defaults
 
-- Email: `abhinav5911thakur@gmail.com`
-- Password: `Abhinav@1606`
+- Email: `admin@example.com` (or your `ADMIN_EMAIL` env value)
+- Password: Value from `ADMIN_PASSWORD` env variable
 
 OTP codes are printed to backend logs when SMTP is disabled (`SMTP_ENABLED=false`).
 

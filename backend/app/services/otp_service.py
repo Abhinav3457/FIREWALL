@@ -15,6 +15,10 @@ _otp_fallback_store: dict[str, tuple[str, float]] = {}
 
 
 def _set_otp_cache(key: str, value: str, ttl_seconds: int) -> None:
+    if redis_client is None:
+        _otp_fallback_store[key] = (value, time.time() + ttl_seconds)
+        return
+
     try:
         redis_client.setex(key, ttl_seconds, value)
     except RedisError:
@@ -22,6 +26,16 @@ def _set_otp_cache(key: str, value: str, ttl_seconds: int) -> None:
 
 
 def _get_otp_cache(key: str) -> str | None:
+    if redis_client is None:
+        cached = _otp_fallback_store.get(key)
+        if not cached:
+            return None
+        value, expires_at = cached
+        if time.time() > expires_at:
+            _otp_fallback_store.pop(key, None)
+            return None
+        return value
+
     try:
         return redis_client.get(key)
     except RedisError:
@@ -36,6 +50,10 @@ def _get_otp_cache(key: str) -> str | None:
 
 
 def _delete_otp_cache(key: str) -> None:
+    if redis_client is None:
+        _otp_fallback_store.pop(key, None)
+        return
+
     try:
         redis_client.delete(key)
     except RedisError:
