@@ -1,7 +1,12 @@
 import axios from "axios";
 
+const envBaseUrl = (import.meta.env.VITE_API_URL || "").trim();
+const normalizedEnvBaseUrl = envBaseUrl
+  ? `${envBaseUrl.replace(/\/+$/, "")}${envBaseUrl.replace(/\/+$/, "").endsWith("/api") ? "" : "/api"}`
+  : "";
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000/api",
+  baseURL: normalizedEnvBaseUrl || "http://localhost:8000/api",
 });
 
 api.interceptors.request.use((config) => {
