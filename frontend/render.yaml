@@ -1,0 +1,8 @@
+services:
+  - type: static
+    name: cafw-frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        sync: false
