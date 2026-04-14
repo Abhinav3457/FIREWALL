@@ -2,12 +2,11 @@ services:
   - type: web
     name: cafw-backend
     env: python
+    pythonVersion: 3.12.4
     plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.12.4
       - key: APP_ENV
         value: production
       - key: FRONTEND_ORIGIN
